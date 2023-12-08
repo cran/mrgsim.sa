@@ -1,7 +1,7 @@
 #' @importFrom tidyselect vars_select everything all_of
 #' @importFrom dplyr mutate left_join select .data %>% n filter rename
 #' @importFrom dplyr bind_rows as_tibble group_by ungroup
-#' @importFrom purrr map_int map imap map_df flatten flatten_chr
+#' @importFrom purrr flatten flatten_chr imap
 #' @importFrom withr with_environment
 #' @importFrom assertthat assert_that
 #' @importFrom ggplot2 geom_line geom_point ggplot aes_string xlab ylab
@@ -9,13 +9,15 @@
 #' @importFrom ggplot2 facet_grid facet_wrap aes scale_color_discrete theme
 #' @importFrom ggplot2 scale_color_viridis_c scale_color_brewer
 #' @importFrom patchwork wrap_plots
-#' @importFrom rlang quos sym set_names enexpr := as_string .env
+#' @importFrom rlang quos sym set_names enexpr := as_string .env abort warn
+#' @importFrom rlang abort is_integerish is_named
 #' @importFrom tidyr unnest nest pivot_longer
 #' @importFrom tibble tibble as_tibble
 #' @importMethodsFrom mrgsolve as.list param update as.data.frame
 #' @importFrom mrgsolve mrgsim_df ev param mrgsim outvars
 #' @importFrom stats as.formula
 #' @importFrom graphics plot
+#' @importFrom glue glue
 #' @import methods
 #' 
 #' @include utils.R
@@ -40,6 +42,10 @@ NULL
 #' - Parameter sequence generation: 
 #'   - In a pipeline: [parseq_cv()], [parseq_fct()], [parseq_range()], [parseq_manual()]
 #'   - Stand alone: [seq_cv()], [seq_fct()], [seq_geo()], [seq_even()]
+#' - Plot ad-hoc sensitivity analysis results
+#'   - Use [sens_plot()]
+#' - Select a subset of sensitivity analysis results
+#'   - Use [select_sens()]
 #' 
 #' @rdname mrgsim.sa
 #' @name mrgsim.sa

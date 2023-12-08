@@ -10,7 +10,8 @@ sens_plot(data, ...)
 
 \method{sens_plot}{sens_each}(
   data,
-  dv_name,
+  dv_name = NULL,
+  p_name = NULL,
   logy = FALSE,
   ncol = NULL,
   lwd = 0.8,
@@ -18,13 +19,14 @@ sens_plot(data, ...)
   plot_ref = TRUE,
   xlab = "time",
   ylab = dv_name[1],
+  layout = c("default", "facet_grid", "facet_wrap", "list"),
   grid = FALSE,
   ...
 )
 
 \method{sens_plot}{sens_grid}(
   data,
-  dv_name,
+  dv_name = NULL,
   digits = 2,
   ncol = NULL,
   lwd = 0.8,
@@ -35,37 +37,69 @@ sens_plot(data, ...)
 }
 \arguments{
 \item{data}{output from \code{\link[=sens_each]{sens_each()}} or
-\code{\link[=sens_grid]{sens_grid()}}}
+\code{\link[=sens_grid]{sens_grid()}}.}
 
-\item{...}{arguments passed on to methods}
+\item{...}{arguments passed on to methods.}
 
-\item{dv_name}{output column name to plot}
+\item{dv_name}{dependent variable names to plot; can be a comma-separated
+string; if \code{NULL}, then the unique values of \code{dv_name} in \code{data} are used.}
+
+\item{p_name}{parameter names to plot; can be a comma-separates string.}
 
 \item{logy}{if \code{TRUE}, y-axis is transformed to log scale}
 
-\item{ncol}{passed to \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}}
+\item{ncol}{passed to \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}.}
 
-\item{lwd}{passed to \code{\link[ggplot2:geom_path]{ggplot2::geom_line()}}}
+\item{lwd}{passed to \code{\link[ggplot2:geom_path]{ggplot2::geom_line()}}.}
 
-\item{digits}{used to format numbers on the strips}
+\item{digits}{used to format numbers on the strips.}
 
 \item{plot_ref}{if \code{TRUE}, then the reference case will be plotted in a black
-dashed line}
+dashed line.}
 
-\item{xlab}{x-axis title}
+\item{xlab}{x-axis title.}
 
-\item{ylab}{y-axis title}
+\item{ylab}{y-axis title; not used for \code{facet_grid} or \code{facet_wrap} layouts.}
+
+\item{layout}{specifies how plots should be returned when \code{dv_name} requests
+multiple dependent variables; see \code{Details}.}
 
 \item{grid}{if \code{TRUE}, plots from the \code{sens_each} method
-will be passed through \code{\link[patchwork:wrap_plots]{patchwork::wrap_plots()}}}
+will be arranged on a page with \code{\link[patchwork:wrap_plots]{patchwork::wrap_plots()}}; see the \code{ncol}
+argument.}
+}
+\value{
+A \code{ggplot} object when one \code{dv_name} is specified or a list of \code{ggplot}
+objects when multiple \code{dv_name}s are specified.
 }
 \description{
 Plot sensitivity analysis results
 }
+\details{
+The \code{layout} argument is only used for the \code{sens_each} method. It lets
+you get the plots back in different formats when multiple dependent
+variables are requested via \code{dv_name}.
+\itemize{
+\item Use \code{default} to get the plots back in a list if multiple dependent
+variables are requested otherwise a single plot is returned.
+\item Use \code{facet_grid} to get a single plot, with parameters in columns and
+dependent variables in rows.
+\item Use \code{facet_wrap} to get a plot with faceted using \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}},
+with both the parameter name and the dependent variable name in the strip.
+\item Use \code{list} to force output to be a list of plots; this output can be
+further arranged using \code{\link[patchwork:wrap_plots]{patchwork::wrap_plots()}} if desired.
+}
+
+When \code{grid} is \code{TRUE}, a list of plots will be returned when multiple
+dependent variables are requested.
+}
 \examples{
 mod <- mrgsolve::house()
+
 dose <- mrgsolve::ev(amt = 100)
+
 out <- sens_run(mod, sargs = list(events = dose),  par = "CL,VC") 
+
 sens_plot(out, dv_name = "CP")
 
 }

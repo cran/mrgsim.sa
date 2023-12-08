@@ -1,23 +1,32 @@
 #' Generate a geometric sequence of parameter values
 #' 
-#' @param from passed to [base::seq()]
-#' @param to passed to [base::seq()]
-#' @param n passed to [base::seq()] as `length.out`
+#' @param from passed to [base::seq()]; must be numeric and positive.
+#' @param to passed to [base::seq()]; must be numeric and positive.
+#' @param n passed to [base::seq()] as `length.out`.
 #' @param digits number of significant digits in the answer; if `NULL` (the 
-#' default) all digits are retained
+#' default) all digits are retained.
 #' 
 #' @examples
-#' seq_geo(1,10,10)
+#' seq_geo(from = 1, to = 10, n = 10)
 #' 
 #' @export
 seq_geo <- function(from, to, n = 5, digits = NULL) {
-  ans <- exp(seq(log(from),log(to), length.out = n))
+  if(!is.numeric(from) | from <= 0) {
+    abort("`from` must be numeric and positive.")
+  }
+  if(!is.numeric(to) | to <= 0) {
+    abort("`to` must be numeric and positive.")
+  }
+  if(!to > from) {
+    abort("`to` must be greater than `from`.")  
+  }
+  ans <- exp(seq(log(from), log(to), length.out = n))
   if(is.numeric(digits)) ans <- signif(ans, digits = digits)
   ans
 }
 
 geo_seq_ <- function(point, n = 5) { #nocov start
-  map(point, function(x) {
+  lapply(point, function(x) {
     seq_geo(x[1], x[2], n)
   })
 } # nocov end
@@ -26,19 +35,23 @@ geo_seq_ <- function(point, n = 5) { #nocov start
 #' Generate a sequence by fold increase and decrease from a point
 #' 
 #' @inheritParams seq_geo
-#' @param point a numeric vector of length 1
-#' @param n number of elements in the sequence
+#' @param point a numeric vector of length 1.
+#' @param n number of elements in the sequence.
 #' @param factor an integer vector of length 1 or 2; if length 1, 
 #' values will be recycled to length 2; the first number used to divide
 #' `point` to generate the minimum value in the sequence; the second 
 #' number is used to multiply `point` to generate the 
-#' maximum value in the sequence
+#' maximum value in the sequence.
 #' @param geo if `TRUE`, [seq_geo()] is used to generate
 #' the sequence; otherwise, [seq_even()] is used to generate 
-#' the sequence
+#' the sequence.
 #' 
 #' @examples
 #' seq_fct(10)
+#' 
+#' seq_fct(10, n = 4, factor = 2)
+#' 
+#' seq_fct(10, n = 4, factor = 2, geo = TRUE)
 #' 
 #' @export
 seq_fct <- function(point, n = 5, factor = c(3,3), geo = TRUE, digits = NULL) {
@@ -57,22 +70,25 @@ seq_fct <- function(point, n = 5, factor = c(3,3), geo = TRUE, digits = NULL) {
 #' Generate evenly spaced sequence
 #' 
 #' @inheritParams seq_geo
-#' @param from passed to [base::seq()]
-#' @param to passed to [base::seq()]
-#' @param n passed to [base::seq()] as `length.out`
+#' @param from passed to [base::seq()].
+#' @param to passed to [base::seq()].
+#' @param n passed to [base::seq()] as `length.out`.
 #' 
 #' @examples
 #' seq_even(1, 10, 4)
 #' 
 #' @export
 seq_even <- function(from, to, n = 5, digits = NULL) {
+  if(!(to > from)) {
+    abort("`to` must be greater than `from`.")  
+  }
   ans <- seq(from, to, length.out = n) 
   if(is.numeric(digits)) ans <- signif(ans, digits = digits)
   ans
 }
 
 even_seq_ <- function(point, n = 5) { #nocov start
-  map(point, function(x) {
+  lapply(point, function(x) {
     seq_even(x[1], x[2], n)
   }) 
 } # nocov end
@@ -81,17 +97,22 @@ even_seq_ <- function(point, n = 5) { #nocov start
 #' Generate a sequence based on coefficient of variation
 #' 
 #' @inheritParams seq_geo
-#' @param point reference parameter value
-#' @param cv coefficient of variation
-#' @param n number of values to simulate in the sequence
-#' @param nsd number of standard deviations defining the 
-#' range of simulated parameter values
+#' @param point reference parameter value.
+#' @param cv coefficient of variation.
+#' @param n number of values to simulate in the sequence.
+#' @param nsd number of standard deviations defining the range of simulated \
+#' parameter values.
 #' 
 #' @examples
 #' seq_cv(10)
 #' 
+#' seq_cv(5, n = 10)
+#' 
 #' @export 
 seq_cv <- function(point, cv = 30, n = 5, nsd = 2, digits = NULL) {
+  if(!is.numeric(point) | point <= 0) {
+    abort("`point` must be numeric and positive.")
+  }
   std <- sqrt((cv/100)^2)
   from <- log(point) - nsd * std
   to <-   log(point) + nsd * std
@@ -99,4 +120,3 @@ seq_cv <- function(point, cv = 30, n = 5, nsd = 2, digits = NULL) {
   if(is.numeric(digits)) ans <- signif(ans, digits = digits)
   ans
 }
-

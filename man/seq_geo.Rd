@@ -7,19 +7,19 @@
 seq_geo(from, to, n = 5, digits = NULL)
 }
 \arguments{
-\item{from}{passed to \code{\link[base:seq]{base::seq()}}}
+\item{from}{passed to \code{\link[base:seq]{base::seq()}}; must be numeric and positive.}
 
-\item{to}{passed to \code{\link[base:seq]{base::seq()}}}
+\item{to}{passed to \code{\link[base:seq]{base::seq()}}; must be numeric and positive.}
 
-\item{n}{passed to \code{\link[base:seq]{base::seq()}} as \code{length.out}}
+\item{n}{passed to \code{\link[base:seq]{base::seq()}} as \code{length.out}.}
 
 \item{digits}{number of significant digits in the answer; if \code{NULL} (the
-default) all digits are retained}
+default) all digits are retained.}
 }
 \description{
 Generate a geometric sequence of parameter values
 }
 \examples{
-seq_geo(1,10,10)
+seq_geo(from = 1, to = 10, n = 10)
 
 }

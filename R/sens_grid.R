@@ -6,22 +6,23 @@ sens_grid <- function(mod, idata = NULL, ...) {
     return(sens_grid_data(mod, data = mod@args[["data"]], idata = NULL, ...))  
   }
   if(!exists("sens_values", mod@args)) {
-    stop("parameter values must be selected first.", call.=FALSE)    
+    abort("Parameter values must be selected first.")    
   }
   if(exists("idata", mod@args)) {
-    stop("idata_set use is not allowed with this workflow.", call.=FALSE)    
+    abort("`idata_set` use is not allowed with this workflow.")    
   }
   if(!is.null(idata)) {
-    stop("idata use is not allowed with this workflow.", call.=FALSE)
+    abort("`idata` use is not allowed with this workflow.")
   }
   mod@args[["carry_out"]] <- NULL
   pars <- mod@args[["sens_values"]] 
+  mod <- clear_args(mod)
   parsdf <- do.call(expand.grid,pars) 
   parsdf <- mutate(parsdf, ID = seq(n()), case = .data[["ID"]])
   ref <- mrgsim_df(mod, ...)
   ref <- pivot_longer(
     ref, 
-    seq(3,ncol(ref)), 
+    seq(3, ncol(ref)), 
     names_to = "dv_name", 
     values_to = "ref_value"
   )
@@ -35,7 +36,7 @@ sens_grid <- function(mod, idata = NULL, ...) {
   out <- denest(out)
   out <- pivot_longer(
     out, 
-    seq(3+length(pars),ncol(out)), 
+    seq(3 + length(pars), ncol(out)), 
     names_to = "dv_name", 
     values_to = "dv_value"
   )
@@ -48,18 +49,19 @@ sens_grid <- function(mod, idata = NULL, ...) {
 sens_grid_data <- function(mod, data, idata = NULL, ...) {
   mod@args[["data"]] <- NULL
   if(!exists("sens_values", mod@args)) {
-    stop("parameter values must be selected first",call.=FALSE)    
+    abort("Parameter values must be selected first.")    
   }
   if(exists("idata", mod@args)) {
-    stop("idata_set use is not allowed with this workflow",call.=FALSE)    
+    abort("`idata_set` use is not allowed with this workflow.")    
   }
   if(!is.null(idata)) {
-    stop("idata use is not allowed with this workflow",call.=FALSE)
+    abort("`idata` use is not allowed with this workflow.")
   }
   vars <- flatten_chr(outvars(mod))
   assert_that(is.data.frame(data))
   mod@args[["carry_out"]] <- NULL
   parlist <- mod@args[["sens_values"]] 
+  mod <- clear_args(mod)
   idata <- do.call(expand.grid,parlist) 
   idata <- mutate(idata, ID = seq(n()))
   pars <- split_id(idata)

@@ -1,7 +1,7 @@
 Package: mrgsim.sa
 Type: Package
 Title: Sensitivity Analysis with 'mrgsolve'
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(person("Kyle", "Baron", "", "kylebtwin@imap.cc", c("aut", "cre")))
 Maintainer: Kyle Baron <kylebtwin@imap.cc>
 Description: Perform sensitivity analysis on ordinary differential equation 
@@ -13,15 +13,16 @@ URL: https://github.com/kylebaron/mrgsim.sa
 BugReports: https://github.com/kylebaron/mrgsim.sa/issues
 Suggests: testthat, knitr, rmarkdown
 Imports: withr, purrr, dplyr, assertthat, rlang, ggplot2, tidyselect,
-        tidyr, methods, tibble, patchwork
+        tidyr, methods, tibble, patchwork, glue
 Encoding: UTF-8
 Language: en-US
 Depends: mrgsolve
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
+VignetteBuilder: knitr
 Collate: 'utils.R' 'parseq.R' 'sens.R' 'AAA.R' 'lsa.R' 'sens_each.R'
         'sens_grid.R' 'sens_plot.R' 'sens_run.R' 'seq.R'
 NeedsCompilation: no
-Packaged: 2020-11-27 21:02:53 UTC; kyleb
+Packaged: 2023-12-08 13:24:06 UTC; kyleb
 Author: Kyle Baron [aut, cre]
 Repository: CRAN
-Date/Publication: 2020-11-30 11:20:02 UTC
+Date/Publication: 2023-12-08 13:50:02 UTC

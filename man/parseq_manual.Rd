@@ -7,14 +7,17 @@
 parseq_manual(mod, ...)
 }
 \arguments{
-\item{mod}{mrgsolve model object}
+\item{mod}{mrgsolve model object.}
 
 \item{...}{named numeric vectors of parameter values to
 simulate; names must correspond to parameters in the model
-object}
+object.}
 }
 \description{
 Simulation helper to manually specify parameter sequences
+}
+\details{
+Parameter value vectors passed via \code{...} will be sorted prior to simulation.
 }
 \examples{
 mod <- mrgsolve::house()
